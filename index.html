@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="CleanFrame checks image metadata and provenance signals locally, compares original and AI-edited images, and provides transparent image optimization tools.">
+  <title>CleanFrame — Image Privacy & Provenance Studio</title>
+  <link rel="icon" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="CleanFrame home"><b class="mark">C</b><span>clean<span class="green">frame</span><small>IMAGE PRIVACY & PROVENANCE STUDIO</small></span></a>
+  <nav><a href="#analyzer">Analyzer</a><a href="#optimizer">Optimizer</a><a href="#about">How it works</a><a href="https://github.com/Ankushbittu0911/cleanframe" target="_blank" rel="noopener">GitHub ↗</a></nav>
+  <button id="theme" class="icon-btn" aria-label="Toggle dark mode">☼</button>
+</header>
+<main id="top">
+  <section class="hero">
+    <div class="eyebrow"><span class="pulse"></span> PRIVATE BY DESIGN · RUNS IN YOUR BROWSER</div>
+    <h1>Understand what<br><em>your image reveals.</em></h1>
+    <p>Inspect metadata and provenance signals, compare a camera original with an AI-edited copy, and understand what a file scan can — and cannot — tell you before sharing.</p>
+    <div class="hero-points"><span>✓ Local image analysis</span><span>✓ No account required</span><span>✓ No image upload to CleanFrame</span></div>
+  </section>
+
+  <section class="workspace" id="analyzer">
+    <div class="section-head">
+      <div><div class="eyebrow">01 / IMAGE ANALYZER</div><h2>Compare original and edited images</h2><p class="subtext">Best for checking a real camera photo before and after editing in ChatGPT, Gemini, Canva or another editor.</p></div>
+      <span class="local-pill">⌁ Processed on this device</span>
+    </div>
+
+    <div class="source-grid">
+      <article class="upload-card">
+        <div class="upload-card-head"><div><span class="step">A</span><div><b>Original photo</b><small>Camera image / unedited file</small></div></div><span class="optional">OPTIONAL</span></div>
+        <label class="drop" id="originalDrop" for="originalFile"><input id="originalFile" type="file" accept="image/*"><span class="upload-icon">↑</span><b id="originalPrompt">Choose original image</b><small>JPG · PNG · WEBP · HEIC* · other browser-supported formats</small></label>
+        <div class="file-chip hidden" id="originalChip"><span class="file-dot"></span><span id="originalName"></span><button data-clear="original" aria-label="Remove original image">×</button></div>
+      </article>
+      <article class="upload-card">
+        <div class="upload-card-head"><div><span class="step step-alt">B</span><div><b>Edited photo</b><small>After ChatGPT, Gemini, Canva, etc.</small></div></div><span class="recommended">RECOMMENDED</span></div>
+        <label class="drop" id="editedDrop" for="editedFile"><input id="editedFile" type="file" accept="image/*"><span class="upload-icon">↑</span><b id="editedPrompt">Choose edited image</b><small>Upload the image you plan to share</small></label>
+        <div class="file-chip hidden" id="editedChip"><span class="file-dot"></span><span id="editedName"></span><button data-clear="edited" aria-label="Remove edited image">×</button></div>
+      </article>
+    </div>
+
+    <div class="context-row">
+      <div class="field"><label for="workflow">How was the image made or edited?</label><select id="workflow"><option value="camera-ai">Real camera photo, then AI-assisted editing</option><option value="camera-manual">Real camera photo, regular editing only</option><option value="ai-generated">Fully AI-generated image</option><option value="mixed">Combination of real and AI-generated elements</option><option value="unknown">Not sure</option></select></div>
+      <div class="field"><label for="editor">Tool used (for context only)</label><select id="editor"><option>ChatGPT</option><option>Gemini</option><option>Canva</option><option>Photoshop / Firefly</option><option>Other editor</option><option>More than one tool</option><option>Not sure</option></select></div>
+      <button id="analyzeBtn" class="primary analyze-btn" disabled>Analyze image signals <span>→</span></button>
+    </div>
+
+    <div id="analysis" class="analysis hidden" aria-live="polite">
+      <div class="analysis-title"><div><div class="eyebrow">SCAN RESULTS</div><h3>Image signal report</h3><p class="subtext" id="scanSummary">Basic file inspection complete.</p></div><button id="downloadReport" class="secondary">↓ Export report</button></div>
+      <div class="notice neutral"><b>Read this first</b><p>This is a local, best-effort file inspection — not Instagram's classifier, a forensic examination, or a cryptographic C2PA validation. A signal being absent does not prove an image is not AI-generated; a signal being present does not prove an image is fully AI-generated.</p></div>
+      <div class="report-grid" id="reportGrid"></div>
+      <div id="comparePanel" class="compare-panel hidden">
+        <div class="compare-head"><div><b>Original vs edited</b><p class="subtext">A comparison of file-level information and detectable markers.</p></div><span class="compare-badge">TWO-FILE COMPARISON</span></div>
+        <div id="compareRows" class="compare-rows"></div>
+      </div>
+      <div class="guidance" id="guidance"></div>
+      <div class="notice warning-notice"><b>About platform labels</b><p>CleanFrame cannot see Instagram's internal assessment and cannot promise whether a post will receive an AI label. Platforms may use signals that are not present in the file or detectable by this browser tool. Follow the platform's current disclosure prompts and correct an inaccurate label through its available in-app feedback or support process.</p></div>
+    </div>
+  </section>
+
+  <section class="workspace optimizer" id="optimizer">
+    <div class="section-head"><div><div class="eyebrow">02 / IMAGE OPTIMIZER</div><h2>Resize and optimize a copy</h2><p class="subtext">Create a resized or converted copy for ordinary workflow needs. This does not control platform AI labels.</p></div><span class="local-pill">No server upload</span></div>
+    <div class="optimizer-grid">
+      <div>
+        <label class="drop compact-drop" id="optDrop" for="optFile"><input id="optFile" type="file" accept="image/*"><span class="upload-icon">＋</span><b id="optPrompt">Choose image to optimize</b><small>Image processing stays in this browser</small></label>
+        <div id="optPreviewWrap" class="opt-preview hidden"><div class="preview-head"><b id="optFileName">Selected image</b><span id="optOriginalInfo"></span></div><img id="optPreview" alt="Image to optimize preview"></div>
+      </div>
+      <div class="opt-controls">
+        <div class="two"><div class="field"><label for="width">Width (px)</label><input id="width" type="number" min="1" max="12000" placeholder="Width"></div><div class="field"><label for="height">Height (px)</label><input id="height" type="number" min="1" max="12000" placeholder="Height"></div></div>
+        <label class="switch-row"><input type="checkbox" id="aspectLock" checked><span class="switch-ui"></span><span><b>Lock aspect ratio</b><small>Keep the original proportions when resizing</small></span></label>
+        <div class="two"><div class="field"><label for="format">Output format</label><select id="format"><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option><option value="image/png">PNG</option></select></div><div class="field"><label for="quality">Quality <output id="qualityValue">85%</output></label><input id="quality" type="range" min="10" max="100" value="85"><small class="field-help">For JPEG and WebP</small></div></div>
+        <div class="notice warning-notice small-notice"><b>Provenance warning</b><p>Resizing or re-encoding may remove or invalidate embedded Content Credentials and other metadata. Keep the original. Do not use an optimized copy to misrepresent how an image was created.</p></div>
+        <button id="exportBtn" class="primary" disabled>Export optimized copy ↗</button>
+        <div id="exportResult" class="export-result hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about"><div class="eyebrow">BUILT AROUND TRANSPARENCY</div><h2>Know the limits. Make informed choices.</h2><div class="feature-grid">
+    <article><span class="feature-icon">⌕</span><h3>Metadata inspection</h3><p>Checks common EXIF, XMP, IPTC and C2PA/JUMBF-related markers in the file bytes. This is a marker scan, not full metadata extraction.</p></article>
+    <article><span class="feature-icon">⇄</span><h3>Before-and-after comparison</h3><p>Compare detectable file signals from a camera original and an edited export to see what changed between the two files.</p></article>
+    <article><span class="feature-icon">◈</span><h3>Honest signal reporting</h3><p>Shows possible AI-related metadata text separately from verified facts. It never claims to detect or remove invisible SynthID watermarks.</p></article>
+  </div></section>
+</main>
+<footer><b>clean<span class="green">frame</span></b><span>Free & open source · Local-first image analysis</span><span>© <span id="year"></span> CleanFrame</span></footer>
+<div id="toast" class="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
